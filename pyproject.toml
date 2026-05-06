@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "mcp-bitbucket"
+version = "0.1.0"
+description = "Local MCP server for Bitbucket access"
+authors = ["cleversonc6"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "mcp_bitbucket" }]
+
+[tool.poetry.dependencies]
+python = "^3.14"
+mcp = "^1.17.1"
+httpx = "^0.28.1"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.14.2"
+taskipy = "^1.14.1"
+pytest = "^9.0.1"
+pip-audit = "^2.9.0"
+bandit = "^1.8.6"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+extend-exclude = ["__pycache__", ".venv", "dist", "build"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.taskipy.tasks]
+lint = "ruff check ."
+format = "ruff format ."
+check = "ruff check . && ruff format --check ."
+run = "mcp-bitbucket"
+test = "pytest"
+audit = "pip-audit"
+sast = "bandit -r mcp_bitbucket -q"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.poetry.scripts]
+mcp-bitbucket = "mcp_bitbucket.app.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

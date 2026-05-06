@@ -1,0 +1,26 @@
+services:
+  mcp-bitbucket:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: mcp-bitbucket:local
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      BITBUCKET_WORKSPACE: "${BITBUCKET_WORKSPACE}"
+      BITBUCKET_TOKEN: "${BITBUCKET_TOKEN}"
+      BITBUCKET_READ_ONLY: "${BITBUCKET_READ_ONLY:-true}"
+      BITBUCKET_API_BASE: "${BITBUCKET_API_BASE:-https://api.bitbucket.org/2.0}"
+      BITBUCKET_CONNECT_TIMEOUT: "${BITBUCKET_CONNECT_TIMEOUT:-10.0}"
+      BITBUCKET_READ_TIMEOUT: "${BITBUCKET_READ_TIMEOUT:-30.0}"
+      BITBUCKET_WRITE_TIMEOUT: "${BITBUCKET_WRITE_TIMEOUT:-30.0}"
+      BITBUCKET_MAX_RETRIES: "${BITBUCKET_MAX_RETRIES:-3}"
+      BITBUCKET_RETRY_BACKOFF: "${BITBUCKET_RETRY_BACKOFF:-0.5}"
+      BITBUCKET_MAX_RESPONSE_CHARS: "${BITBUCKET_MAX_RESPONSE_CHARS:-100000}"
+    stdin_open: true
+    tty: false
