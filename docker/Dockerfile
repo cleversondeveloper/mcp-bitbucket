@@ -26,7 +26,11 @@ RUN adduser --disabled-password --gecos "" --home /home/app app
 
 COPY --from=builder /usr/local /usr/local
 
-USER app
-
 ENTRYPOINT ["python", "-m", "mcp_bitbucket.app.main"]
 CMD ["--transport", "stdio"]
+
+LABEL "io.modelcontextprotocol.mcp.name"="bitbucket"
+LABEL "io.modelcontextprotocol.mcp.description"="Acesso ao MCP Bitbucket"
+LABEL "io.modelcontextprotocol.mcp.runtime"="python"
+LABEL "io.modelcontextprotocol.mcp.container.entrypoint"="python"
+LABEL "io.modelcontextprotocol.mcp.container.args"='["-m", "mcp_bitbucket.app.main", "--transport", "stdio"]'
