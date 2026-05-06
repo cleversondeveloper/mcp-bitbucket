@@ -213,6 +213,12 @@ Docker:
 
 ## ⚙️ Variáveis de ambiente
 
+Resumo rápido:
+
+- `BITBUCKET_SCOPE_CHECK_ON_STARTUP=false` mantém o startup simples e sem bloqueio por validação de escopos.
+- `BITBUCKET_SCOPE_CHECK_ON_STARTUP=true` ativa o preflight de segurança.
+- `BITBUCKET_STRICT_SCOPE_CHECK=true` faz a falha de validação interromper o boot quando o preflight estiver ativo.
+
 | Variável | Obrigatória | Padrão | Descrição |
 |---|---|---|---|
 | `BITBUCKET_WORKSPACE` | Sim | - | Workspace slug |
@@ -227,7 +233,7 @@ Docker:
 | `BITBUCKET_API_BASE` | Não | `https://api.bitbucket.org/2.0` | Base da API Bitbucket |
 | `BITBUCKET_ALLOWED_API_HOSTS` | Não | `api.bitbucket.org` | Hosts permitidos para `BITBUCKET_API_BASE` (CSV) |
 | `BITBUCKET_TRUST_ENV_PROXY` | Não | `false` | Permite uso de `HTTP_PROXY` e `HTTPS_PROXY` do ambiente |
-| `BITBUCKET_SCOPE_CHECK_ON_STARTUP` | Não | `true` | Executa preflight de segurança no startup |
+| `BITBUCKET_SCOPE_CHECK_ON_STARTUP` | Não | `false` | Executa preflight de segurança no startup quando habilitado |
 | `BITBUCKET_STRICT_SCOPE_CHECK` | Não | `false` | Falha startup se escopos mínimos não forem comprovados |
 | `BITBUCKET_CONNECT_TIMEOUT` | Não | `10.0` | Timeout de conexão (em segundos) |
 | `BITBUCKET_READ_TIMEOUT` | Não | `30.0` | Timeout de leitura (em segundos) |
@@ -274,7 +280,7 @@ Use tokens separados para leitura e escrita quando possível.
 
 ## 🛡️ Verificações de segurança
 
-- O startup executa preflight de segurança por padrão (`BITBUCKET_SCOPE_CHECK_ON_STARTUP=true`).
+- O preflight de segurança no startup fica desabilitado por padrão para não bloquear a inicialização do servidor MCP.
 - Escrita só é habilitada com configuração explícita:
   - `BITBUCKET_READ_ONLY=false`
   - `BITBUCKET_ENABLE_WRITE=true`
@@ -282,6 +288,25 @@ Use tokens separados para leitura e escrita quando possível.
 - Operações destrutivas exigem confirmação explícita e, por padrão, frase de confirmação.
 - Operações sensíveis (`merge`, `decline`, `request_changes`) possuem quota própria por janela.
 - Rotação de token já é suportada por leitura dinâmica de `BITBUCKET_TOKEN_FILE` sem reinício do processo.
+
+### 📊 Matriz de comportamento do preflight
+
+O preflight valida o acesso ao workspace e tenta confirmar escopos do token no startup.
+Quando `BITBUCKET_SCOPE_CHECK_ON_STARTUP=true`, ele é executado antes do servidor expor as tools.
+O impacto real depende da combinação com `BITBUCKET_STRICT_SCOPE_CHECK`.
+
+| `BITBUCKET_SCOPE_CHECK_ON_STARTUP` | `BITBUCKET_STRICT_SCOPE_CHECK` | Resultado no startup |
+|---|---|---|
+| `false` | `false` | O servidor inicia normalmente. Nenhuma validação de escopo é executada no boot. |
+| `false` | `true` | O servidor inicia normalmente. O `strict` fica sem efeito porque o preflight não foi acionado. |
+| `true` | `false` | O servidor executa o preflight. Se a validação falhar, registra warning e continua subindo. |
+| `true` | `true` | O servidor executa o preflight. Se a validação falhar ou os escopos mínimos não forem comprovados, o startup falha. |
+
+Recomendação prática:
+
+- Para uso padrão em clientes MCP via Docker, mantenha `BITBUCKET_SCOPE_CHECK_ON_STARTUP=false`.
+- Ative `BITBUCKET_SCOPE_CHECK_ON_STARTUP=true` apenas em ambientes de validação ou quando quiser bloquear o boot por política.
+- Use `BITBUCKET_STRICT_SCOPE_CHECK=true` somente se a indisponibilidade no startup for aceitável em troca de enforcement mais rígido.
 
 ## 🔎 Scans recomendados
 

@@ -30,7 +30,7 @@ class BitbucketConfig:
     allowed_repos: tuple[str, ...] = ()
     allowed_api_hosts: tuple[str, ...] = ("api.bitbucket.org",)
     trust_env_proxy: bool = False
-    scope_check_on_startup: bool = True
+    scope_check_on_startup: bool = False
     strict_scope_check: bool = False
     max_connections: int = 100
     max_keepalive_connections: int = 20
@@ -140,7 +140,7 @@ class BitbucketConfig:
         allow_merge = _parse_bool("BITBUCKET_ALLOW_MERGE", False)
         require_confirm_phrase = _parse_bool("BITBUCKET_REQUIRE_CONFIRM_PHRASE", True)
         trust_env_proxy = _parse_bool("BITBUCKET_TRUST_ENV_PROXY", False)
-        scope_check_on_startup = _parse_bool("BITBUCKET_SCOPE_CHECK_ON_STARTUP", True)
+        scope_check_on_startup = _parse_bool("BITBUCKET_SCOPE_CHECK_ON_STARTUP", False)
         strict_scope_check = _parse_bool("BITBUCKET_STRICT_SCOPE_CHECK", False)
         confirm_phrase = os.environ.get("BITBUCKET_CONFIRM_PHRASE", cls.confirm_phrase)
         allowed_repos_raw = os.environ.get("BITBUCKET_ALLOWED_REPOS", "")

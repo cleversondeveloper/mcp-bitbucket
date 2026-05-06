@@ -45,3 +45,7 @@ def main() -> None:
         pass
 
     create_mcp_server(config).run(transport=args.transport)
+
+
+if __name__ == "__main__":
+    main()

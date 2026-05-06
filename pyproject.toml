@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mcp-bitbucket"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local MCP server for Bitbucket access"
 authors = ["cleversonc6"]
 license = "MIT"
