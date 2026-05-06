@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  CI_PYTHON_POETRY_TAG: "0.0.1"
+  CI_PYTHON_POETRY_TAG: "0.1.0"
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
