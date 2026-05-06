@@ -5,8 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] - Unreleased
-
+## [0.1.0] - RELEASED ![RELEASED](https://img.shields.io/badge/status-RELEASED-brightgreen) (2026-05-06)
 ### Added
 - Initial MCP integration with basic tools.
 - Granular timeouts and optional caching for performance.
