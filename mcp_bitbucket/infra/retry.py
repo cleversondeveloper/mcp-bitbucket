@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from random import uniform
+from random import uniform  # nosec B311
 
 import httpx
 
@@ -11,6 +11,7 @@ import httpx
 @dataclass(frozen=True)
 class ExponentialBackoffRetryStrategy:
     """Implementa politica de retry com backoff exponencial."""
+
     max_retries: int
     retry_backoff: float
     retry_status_codes: tuple[int, ...]
@@ -42,4 +43,4 @@ class ExponentialBackoffRetryStrategy:
                 pass
         base = self.retry_backoff * (2**attempt)
         jitter = base * self.jitter_ratio
-        return max(0.0, base + uniform(-jitter, jitter))
+        return max(0.0, base + uniform(-jitter, jitter))  # nosec B311

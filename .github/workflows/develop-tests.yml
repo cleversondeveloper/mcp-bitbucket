@@ -26,3 +26,11 @@ jobs:
 
       - name: Run tests
         run: poetry run pytest
+
+      - name: Validate Dockerfile
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" \
+            -w /work \
+            hadolint/hadolint:latest-alpine \
+            hadolint docker/Dockerfile

@@ -3,7 +3,8 @@
 Servidor MCP para operações no Bitbucket, com execução local (Poetry) ou em Docker.
 
 ![Develop Tests](https://img.shields.io/github/actions/workflow/status/<org-ou-usuario>/mcp-bitbucket/develop-tests.yml?branch=develop&label=develop%20tests)
-![Main Release](https://img.shields.io/github/actions/workflow/status/<org-ou-usuario>/mcp-bitbucket/main-release.yml?branch=main&label=main%20release)
+![Main Build](https://img.shields.io/github/actions/workflow/status/<org-ou-usuario>/mcp-bitbucket/main-build.yml?branch=main&label=main%20build)
+![Tag Publish](https://img.shields.io/github/actions/workflow/status/<org-ou-usuario>/mcp-bitbucket/tag-publish.yml?branch=main&label=tag%20publish)
 
 ## ✨ Visão rápida
 
@@ -315,12 +316,6 @@ poetry run task sast
 poetry run task audit
 ```
 
-## 📦 Assinatura de release
-
-- Workflow de assinatura keyless para wheel/sdist e imagem container:
-  - [release-sign.yml](/home/cleversonc6/Projetos/BSR/mcp-bitbucket/.github/workflows/release-sign.yml)
-- A assinatura de imagem utiliza Cosign e a de artefatos Python usa Sigstore.
-
 ## 📡 Auditoria externa (SIEM)
 
 - O MCP já publica eventos de auditoria (`bitbucket_request_audit`) em logs.
@@ -354,9 +349,13 @@ services:
 
 ## 🏗️ CI/CD
 
-- `develop`: executa testes automatizados (`develop-tests.yml`).
-- `main`: calcula próxima versão por SEMVER a partir do `CHANGELOG`, marca a versão como `RELEASED` com badge, cria tag `vX.Y.Z` e publica imagem multiarch no Docker Hub `<dockerhub-username>/mcp-bitbucket`.
-- As etapas de release usam a imagem `<dockerhub-username>/ci-python-poetry:<tag>` para executar scripts de versionamento/changelog.
+- `develop`:
+  - executa testes automatizados
+  - valida o Dockerfile com Hadolint
+- `main`:
+  - builda a imagem local
+- `tag v*`:
+  - builda e publica a imagem multiarch no Docker Hub `<dockerhub-username>/mcp-bitbucket`
 
 ## 🔐 Variáveis e Secrets Necessários
 
@@ -366,19 +365,6 @@ services:
 |---|---|---|
 | `DOCKERHUB_USERNAME` | Sim | Namespace do Docker Hub (usado em login e tags) |
 | `DOCKERHUB_TOKEN` | Sim | Token para autenticação no Docker Hub |
-
-### 🧩 Configuração da tag da imagem de CI (no YAML)
-
-A tag da imagem de CI é definida diretamente no workflow:
-
-```yaml
-env:
-  CI_PYTHON_POETRY_TAG: "latest"
-```
-
-Arquivo:
-
-- `.github/workflows/main-release.yml`
 
 ### ⚙️ Variáveis de Ambiente da Aplicação
 
